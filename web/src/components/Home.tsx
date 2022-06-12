@@ -4,6 +4,24 @@ const { REACT_APP_CMS_URL } = process.env;
 
 const HOME: FC<unknown> = () => {
   const [info, setInfo] = useState<any[]>([]);
+  const [filteredLang, setFilteredLang] = useState<any[]>([]);
+
+  const filterLang = (e: React.MouseEvent<HTMLButtonElement>, num: number) => {
+    e.stopPropagation();
+    if (num === 2) {
+      const filteredphp = info.filter((item) => {
+        return item.language === 'PHP';
+      });
+      setFilteredLang(filteredphp);
+    } else if (num === 3) {
+      const filteredtypescript = info.filter((item) => {
+        return item.language === 'TypeScript';
+      });
+      setFilteredLang(filteredtypescript);
+    } else {
+      setFilteredLang(info);
+    }
+  };
 
   const listSorter = (arr: any[]) => {
     arr.sort(function (a, b) {
@@ -18,14 +36,14 @@ const HOME: FC<unknown> = () => {
       }
       return 0;
     });
-    setInfo(arr);
+    setFilteredLang(arr);
   };
 
   useEffect(() => {
     (async () => {
       try {
         const data = await fetchJson(`${REACT_APP_CMS_URL}/repos`);
-
+        setInfo(data);
         listSorter(data);
       } catch (err) {
         console.log(err);
@@ -34,8 +52,8 @@ const HOME: FC<unknown> = () => {
   }, []);
 
   const renderList = () => {
-    if (info) {
-      return info.map((item) => {
+    if (filteredLang) {
+      return filteredLang.map((item) => {
         return (
           <div key={item.id} className="itembox">
             <div>
@@ -60,8 +78,11 @@ const HOME: FC<unknown> = () => {
   };
 
   return (
-    <div>
+    <div className="Home">
       <h1>Home</h1>
+      <button onClick={(e) => filterLang(e, 1)}>All</button>
+      <button onClick={(e) => filterLang(e, 2)}>PHP</button>
+      <button onClick={(e) => filterLang(e, 3)}>TypeScript</button>
       <div className="list">{renderList()}</div>
     </div>
   );
