@@ -8,7 +8,7 @@
 
 .navbar {
   height: 2em;
-  border-bottom: 1px solid pink;
+  border-bottom: 1px solid rgb(194, 167, 211);
 }
 
 .navbar nav {
@@ -24,9 +24,32 @@ nav a {
 
 .active {
   font-weight: bold;
-  color: aqua;
+  color: rgb(118, 120, 195);
 }
 
 .inactive {
   color: rgb(0, 0, 0);
+}
+
+/* List styles */
+
+.list {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.itembox {
+  display: flex;
+  flex-direction: column;
+  padding: 0.4em;
+  margin-bottom: 1em;
+  min-width: 30rem;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.head {
+  font-weight: bold;
+  color: rgb(118, 120, 195);
 }
