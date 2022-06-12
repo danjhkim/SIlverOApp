@@ -5,6 +5,7 @@ export const repos = Router();
 
 repos.get('/', async (req: Request, res: Response) => {
   res.header('Cache-Control', 'no-store');
+  res.header('Content-Type', 'application/json');
 
   try {
     const data = await fetch('https://api.github.com/users/silverorange/repos');
