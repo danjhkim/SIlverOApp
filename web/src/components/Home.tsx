@@ -1,11 +1,35 @@
 import { FC, useEffect, useState } from 'react';
 import { fetchJson } from '../lib/api';
+import Modal from './Modal';
 const { REACT_APP_CMS_URL } = process.env;
 
 const HOME: FC<unknown> = () => {
+  const [openModal, setOpenModal] = useState(false);
   const [info, setInfo] = useState<any[]>([]);
   const [filteredLang, setFilteredLang] = useState<any[]>([]);
+  const [details, setDetails] = useState<object>();
 
+  //initial api call for data
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await fetchJson(`${REACT_APP_CMS_URL}/repos`);
+        setInfo(data);
+        listSorter(data);
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
+
+  //Open Modal for detailed info
+  const openDetails = (e: React.MouseEvent<HTMLDivElement>, item: object) => {
+    e.stopPropagation();
+    setOpenModal(true);
+    setDetails(item);
+  };
+
+  //language filter
   const filterLang = (e: React.MouseEvent<HTMLButtonElement>, num: number) => {
     e.stopPropagation();
     if (num === 2) {
@@ -23,6 +47,7 @@ const HOME: FC<unknown> = () => {
     }
   };
 
+  //date sorter
   const listSorter = (arr: any[]) => {
     arr.sort(function (a, b) {
       const keyA = new Date(a.created_at);
@@ -39,23 +64,15 @@ const HOME: FC<unknown> = () => {
     setFilteredLang(arr);
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchJson(`${REACT_APP_CMS_URL}/repos`);
-        setInfo(data);
-        listSorter(data);
-      } catch (err) {
-        console.log(err);
-      }
-    })();
-  }, []);
-
   const renderList = () => {
     if (filteredLang) {
-      return filteredLang.map((item) => {
+      return filteredLang.map((item, index) => {
         return (
-          <div key={item.id} className="itembox">
+          <div
+            key={item.id}
+            className="itembox"
+            onClick={(e) => openDetails(e, item)}
+          >
             <div>
               <span className="head">Name:</span> {item.name}
             </div>
@@ -76,6 +93,10 @@ const HOME: FC<unknown> = () => {
       });
     }
   };
+
+  if (openModal && details) {
+    return <Modal info={details} setOpenModal={setOpenModal} />;
+  }
 
   return (
     <div className="Home">
