@@ -10,7 +10,10 @@ repos.get('/', async (req: Request, res: Response) => {
   try {
     const data = await fetch('https://api.github.com/users/silverorange/repos');
 
-    const formatData = await data.json();
+    let formatData = await data.json();
+    formatData = formatData.filter((item: { fork: boolean }) => {
+      return item.fork === false;
+    });
     res.status(200).send(formatData);
   } catch (e) {
     if (e instanceof Error) {
